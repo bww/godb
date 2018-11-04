@@ -5,8 +5,8 @@ import (
   "time"
   "reflect"
   
-  "github.com/hirepurpose/godb"
-  "github.com/hirepurpose/godb/pql"
+  "github.com/bww/godb"
+  "github.com/bww/godb/pql"
 )
 
 import (

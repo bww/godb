@@ -4,7 +4,7 @@ import (
   "os"
   "testing"
   
-  "github.com/hirepurpose/godb/test"
+  "github.com/bww/godb/test"
 )
 
 const dbname = "hp_db_persist_test"

@@ -6,8 +6,8 @@ import (
   "sync"
   "net/url"
   
-  "github.com/hirepurpose/godb"
-  "github.com/hirepurpose/godb/sync/faux"
+  "github.com/bww/godb"
+  "github.com/bww/godb/sync/faux"
 )
 
 import (

@@ -4,9 +4,9 @@ import (
   "fmt"
   "reflect"
   
-  "github.com/hirepurpose/godb"
-  "github.com/hirepurpose/godb/convert"
-  "github.com/hirepurpose/godb/uuid"
+  "github.com/bww/godb"
+  "github.com/bww/godb/convert"
+  "github.com/bww/godb/uuid"
 )
 
 var inc = 0

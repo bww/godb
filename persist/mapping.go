@@ -6,7 +6,7 @@ import (
   "strings"
   "reflect"
   
-  "github.com/hirepurpose/godb/convert"
+  "github.com/bww/godb/convert"
 )
 
 import (

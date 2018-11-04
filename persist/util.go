@@ -5,7 +5,7 @@ import (
   "time"
   "reflect"
   
-  "github.com/hirepurpose/godb/uuid"
+  "github.com/bww/godb/uuid"
 )
 
 // A range

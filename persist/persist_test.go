@@ -4,8 +4,8 @@ import (
   "fmt"
   "testing"
   
-  "github.com/hirepurpose/godb/test"
-  "github.com/hirepurpose/godb/uuid"
+  "github.com/bww/godb/test"
+  "github.com/bww/godb/uuid"
 )
 
 import (

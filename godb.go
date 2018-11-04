@@ -7,7 +7,7 @@ import (
   "strings"
   "database/sql"
   
-  "github.com/hirepurpose/godb/sync"
+  "github.com/bww/godb/sync"
 )
 
 import (
@@ -81,7 +81,7 @@ func New(uri string, migrate bool, syncer sync.Service) (*Database, error) {
     if err != nil {
       return nil, err
     }
-    err = lock.Perform(store.migrate)
+    err = lock.Perform(store.Migrate)
     if err != nil {
       return nil, err
     }
@@ -91,7 +91,12 @@ func New(uri string, migrate bool, syncer sync.Service) (*Database, error) {
 }
 
 // Migrate
-func (d *Database) migrate() error {
+func (d *Database) Migrate() error {
+  return d.MigrateToVersion(-1)
+}
+
+// Migrate to a specific version
+func (d *Database) MigrateToVersion(v int) error {
   
   p, err := postgres.NewWithDB(d.db)
   if err != nil {
@@ -103,7 +108,7 @@ func (d *Database) migrate() error {
     return err
   }
   
-  _, err = u.Upgrade()
+  _, err = u.UpgradeToVersion(v)
   if err != nil {
     return err
   }
