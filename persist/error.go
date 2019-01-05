@@ -1,32 +1,34 @@
 package persist
 
 import (
-  "fmt"
-  "strings"
-  "reflect"
+	"fmt"
+	"reflect"
+	"strings"
 )
 
 type multiError []error
 
 func (e multiError) Error() string {
-  s := &strings.Builder{}
-  for i, v := range e {
-    if i > 0 { s.WriteString("; ") }
-    s.WriteString(v.Error())
-  }
-  return s.String()
+	s := &strings.Builder{}
+	for i, v := range e {
+		if i > 0 {
+			s.WriteString("; ")
+		}
+		s.WriteString(v.Error())
+	}
+	return s.String()
 }
 
 type subfetchError struct {
-  which   reflect.Type
-  value   reflect.Value
-  err     error
+	which reflect.Type
+	value reflect.Value
+	err   error
 }
 
 func newSubfetchError(t reflect.Type, v reflect.Value, e error) subfetchError {
-  return subfetchError{t, v, e}
+	return subfetchError{t, v, e}
 }
 
 func (s subfetchError) Error() string {
-  return fmt.Sprintf("Sub-fetch (%v) - %v", s.which, s.err)
+	return fmt.Sprintf("Sub-fetch (%v) - %v", s.which, s.err)
 }
