@@ -93,6 +93,8 @@ func (v UUID) Value() (driver.Value, error) {
 func (v *UUID) Scan(src interface{}) error {
 	var err error
 	switch c := src.(type) {
+	case nil:
+		*v = Zero
 	case []byte:
 		*v, err = Parse(string(c))
 	case string:
