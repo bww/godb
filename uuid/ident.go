@@ -82,7 +82,11 @@ func (v *UUID) UnmarshalJSON(data []byte) error {
 
 // Value
 func (v UUID) Value() (driver.Value, error) {
-	return v.String(), nil
+	if v == Zero {
+		return nil, nil
+	} else {
+		return v.String(), nil
+	}
 }
 
 // Scan

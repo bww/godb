@@ -7,10 +7,10 @@ import (
 	"github.com/bww/godb/test"
 )
 
-const dbname = "hp_db_persist_test"
-const table = "hp_persist_test"
+const dbname = "godb_db_persist_test"
+const table = "godb_persist_test"
 
 func TestMain(m *testing.M) {
-	test.Init(dbname)
+	test.Init(dbname, false)
 	os.Exit(m.Run())
 }

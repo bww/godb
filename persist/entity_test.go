@@ -17,8 +17,8 @@ func newId() interface{} {
 }
 
 type foreignTester struct {
-	Id    uuid.Ident `db:"id,pk"`
-	Value string     `db:"value"`
+	Id    uuid.UUID `db:"id,pk"`
+	Value string    `db:"value"`
 }
 
 func (f foreignTester) ForeignKey() interface{} {
@@ -33,11 +33,11 @@ func (e foreignPersister) Table() string {
 	return "hp_persist_test_foreign" // defined in base but never created in production
 }
 
-func (e foreignPersister) StoreTesterEntity(v *foreignTester, opts StoreOptions, cxt db.Context) error {
+func (e foreignPersister) StoreTesterEntity(v *foreignTester, opts StoreOptions, cxt godb.Context) error {
 	return e.StoreEntity(e, v, opts, cxt)
 }
 
-func (e foreignPersister) FetchTesterEntity(id uuid.Ident, opts FetchOptions, cxt db.Context) (*foreignTester, error) {
+func (e foreignPersister) FetchTesterEntity(id uuid.UUID, opts FetchOptions, cxt godb.Context) (*foreignTester, error) {
 	v := &foreignTester{}
 	err := e.FetchEntity(e, v, opts, cxt, `SELECT {*} FROM hp_persist_test_foreign WHERE id = $1`, id)
 	if err != nil {
@@ -46,7 +46,7 @@ func (e foreignPersister) FetchTesterEntity(id uuid.Ident, opts FetchOptions, cx
 	return v, nil
 }
 
-func (e foreignPersister) FetchTesterEntities(limit Range, opts FetchOptions, cxt db.Context) ([]*foreignTester, error) {
+func (e foreignPersister) FetchTesterEntities(limit Range, opts FetchOptions, cxt godb.Context) ([]*foreignTester, error) {
 	var v []*foreignTester
 	err := e.FetchEntities(e, &v, opts, cxt, `SELECT {*} FROM hp_persist_test_foreign ORDER BY id OFFSET $1 LIMIT $2`, limit.Location, limit.Length)
 	if err != nil {
@@ -55,7 +55,7 @@ func (e foreignPersister) FetchTesterEntities(limit Range, opts FetchOptions, cx
 	return v, nil
 }
 
-func (e foreignPersister) DeleteTesterEntity(v *foreignTester, opts StoreOptions, cxt db.Context) error {
+func (e foreignPersister) DeleteTesterEntity(v *foreignTester, opts StoreOptions, cxt godb.Context) error {
 	return e.DeleteEntity(e, v, opts, cxt)
 }
 
@@ -83,11 +83,11 @@ func (e entityPersister) Table() string {
 	return "hp_persist_test" // defined in base but never created in production
 }
 
-func (t entityPersister) GenerateId(val interface{}, cxt db.Context) (interface{}, error) {
+func (t entityPersister) GenerateId(val interface{}, cxt godb.Context) (interface{}, error) {
 	return uuid.New().String(), nil
 }
 
-func (t entityPersister) IsTransient(val interface{}, cxt db.Context) (bool, error) {
+func (t entityPersister) IsTransient(val interface{}, cxt godb.Context) (bool, error) {
 	var n int
 	id := val.(*entityTester).Id
 	if id == "" {
@@ -103,11 +103,11 @@ func (t entityPersister) IsTransient(val interface{}, cxt db.Context) (bool, err
 	return n == 0, nil
 }
 
-func (e entityPersister) StoreTesterEntity(v *entityTester, opts StoreOptions, cxt db.Context) error {
+func (e entityPersister) StoreTesterEntity(v *entityTester, opts StoreOptions, cxt godb.Context) error {
 	return e.StoreEntity(e, v, opts, cxt)
 }
 
-func (e entityPersister) FetchTesterEntity(id string, opts FetchOptions, cxt db.Context) (*entityTester, error) {
+func (e entityPersister) FetchTesterEntity(id string, opts FetchOptions, cxt godb.Context) (*entityTester, error) {
 	v := &entityTester{}
 	err := e.FetchEntity(e, v, opts, cxt, `SELECT {*} FROM hp_persist_test WHERE id = $1`, id)
 	if err != nil {
@@ -116,7 +116,7 @@ func (e entityPersister) FetchTesterEntity(id string, opts FetchOptions, cxt db.
 	return v, nil
 }
 
-func (e entityPersister) FetchTesterEntities(limit Range, opts FetchOptions, cxt db.Context) ([]*entityTester, error) {
+func (e entityPersister) FetchTesterEntities(limit Range, opts FetchOptions, cxt godb.Context) ([]*entityTester, error) {
 	var v []*entityTester
 	err := e.FetchEntities(e, &v, opts, cxt, `SELECT {*} FROM hp_persist_test ORDER BY name OFFSET $1 LIMIT $2`, limit.Location, limit.Length)
 	if err != nil {
@@ -125,15 +125,15 @@ func (e entityPersister) FetchTesterEntities(limit Range, opts FetchOptions, cxt
 	return v, nil
 }
 
-func (e entityPersister) IterTesterEntities(opts FetchOptions, cxt db.Context) (Iter, error) {
+func (e entityPersister) IterTesterEntities(opts FetchOptions, cxt godb.Context) (Iter, error) {
 	return e.IterEntities(e, reflect.TypeOf((*entityTester)(nil)), opts, cxt, `SELECT {*} FROM hp_persist_test ORDER BY name`)
 }
 
-func (e entityPersister) DeleteTesterEntity(v *entityTester, opts StoreOptions, cxt db.Context) error {
+func (e entityPersister) DeleteTesterEntity(v *entityTester, opts StoreOptions, cxt godb.Context) error {
 	return e.DeleteEntity(e, v, opts, cxt)
 }
 
-func (e entityPersister) StoreRelated(v interface{}, opts StoreOptions, cxt db.Context) error {
+func (e entityPersister) StoreRelated(v interface{}, opts StoreOptions, cxt godb.Context) error {
 	z := v.(*entityTester)
 	if z.Foreign != nil {
 		p := foreignPersister{New(cxt)}
@@ -145,14 +145,14 @@ func (e entityPersister) StoreRelated(v interface{}, opts StoreOptions, cxt db.C
 	return nil
 }
 
-func (e entityPersister) StoreReferences(v interface{}, opts StoreOptions, cxt db.Context) error {
+func (e entityPersister) StoreReferences(v interface{}, opts StoreOptions, cxt godb.Context) error {
 	return nil
 }
 
-func (e entityPersister) FetchRelatedExtra(v interface{}, extra Columns, opts FetchOptions, cxt db.Context) error {
+func (e entityPersister) FetchRelatedExtra(v interface{}, extra Columns, opts FetchOptions, cxt godb.Context) error {
 	z := v.(*entityTester)
 	if k, ok := extra["foreign_id"]; ok && k != nil {
-		var id uuid.Ident
+		var id uuid.UUID
 		err := convert.Assign(&id, k)
 		if err != nil {
 			return err
@@ -167,10 +167,10 @@ func (e entityPersister) FetchRelatedExtra(v interface{}, extra Columns, opts Fe
 	return nil
 }
 
-func (e entityPersister) DeleteRelated(v interface{}, opts StoreOptions, cxt db.Context) error {
+func (e entityPersister) DeleteRelated(v interface{}, opts StoreOptions, cxt godb.Context) error {
 	return nil
 }
 
-func (e entityPersister) DeleteReferences(v interface{}, opts StoreOptions, cxt db.Context) error {
+func (e entityPersister) DeleteReferences(v interface{}, opts StoreOptions, cxt godb.Context) error {
 	return nil
 }
