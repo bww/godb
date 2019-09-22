@@ -43,7 +43,7 @@ type Database struct {
 }
 
 // Create a new store
-func New(uri string, migrate bool, syncer sync.Service) (*Database, error) {
+func New(uri string, migrate bool, syncer sync.Service, opts ...Option) (*Database, error) {
 
 	// parse the URL for the scheme
 	u, err := url.Parse(uri)
@@ -65,12 +65,17 @@ func New(uri string, migrate bool, syncer sync.Service) (*Database, error) {
 		return nil, fmt.Errorf("Could not open cache DB connection: %v", err)
 	}
 
-	// params
+	// default params, may be overrided by options
 	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(10)
+	db.SetMaxIdleConns(5)
 
 	// setup our store
 	store := &Database{db, lru.New(CACHE_ELEMENTS_DEFAULT), u.Path}
+
+	// apply options
+	for _, e := range opts {
+		store = e(store)
+	}
 
 	// run migrations if necessary
 	if migrate {
