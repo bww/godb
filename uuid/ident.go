@@ -4,9 +4,7 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"fmt"
-)
 
-import (
 	"github.com/bww/go-util/uuid"
 )
 
@@ -64,13 +62,20 @@ func (v UUID) MarshalJSON() ([]byte, error) {
 
 // Marshal
 func (v *UUID) UnmarshalJSON(data []byte) error {
+	r := string(data)
+	if r == "null" || r == "0" {
+		copy(v[:], Zero[:])
+		return nil
+	}
+
 	var s string
 	err := json.Unmarshal(data, &s)
 	if err != nil {
 		return err
 	}
-	if s == "null" {
-		*v = Zero
+
+	if s == "" {
+		copy(v[:], Zero[:])
 	} else {
 		*v, err = Parse(s)
 		if err != nil {
