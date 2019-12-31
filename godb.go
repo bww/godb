@@ -51,8 +51,6 @@ func New(uri string, migrate bool, syncer sync.Service, opts ...Option) (*Databa
 		return nil, err
 	}
 
-	// note this here, since we don't want to log credentials
-	fmt.Printf("-----> Connecting to %v at: %v%v", strings.Title(u.Scheme), u.Host, u.Path)
 	if info := u.User; info != nil {
 		fmt.Printf(" (%s)\n", info.Username())
 	} else {
