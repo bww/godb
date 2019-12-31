@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 	"net/url"
-	"strings"
 	"time"
 
 	"github.com/bww/godb/sync"
