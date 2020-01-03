@@ -50,12 +50,6 @@ func New(uri string, migrate bool, syncer sync.Service, opts ...Option) (*Databa
 		return nil, err
 	}
 
-	if info := u.User; info != nil {
-		fmt.Printf(" (%s)\n", info.Username())
-	} else {
-		fmt.Println()
-	}
-
 	// open our database connection
 	db, err := sql.Open(u.Scheme, uri)
 	if err != nil {
